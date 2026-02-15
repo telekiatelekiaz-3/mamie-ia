@@ -54,22 +54,21 @@ return [
 }
 
 
-function speak(text) {
+function speakRandomAudio() {
 
-    const speech = new SpeechSynthesisUtterance(text);
+    const audios = [
+        "mamie1.mp3",
+        "mamie2.mp3",
+        "mamie3.mp3",
+        "mamie4.mp3"
+    ];
 
-    speech.lang = "fr-FR";
+    const randomAudio = audios[Math.floor(Math.random() * audios.length)];
 
-    // vitesse variable (plus humain)
-    speech.rate = 0.85 + (Math.random() * 0.2);
-
-    // petite variation de ton
-    speech.pitch = 0.75 + (Math.random() * 0.2);
-
-    speech.volume = 1;
-
-    speechSynthesis.speak(speech);
+    const audio = new Audio(randomAudio);
+    audio.play();
 }
+
 
 
 function startListening() {
