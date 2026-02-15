@@ -20,19 +20,49 @@ button { padding: 15px 25px; font-size: 18px; border-radius: 10px; border: none;
 <div id="response"></div>
 
 <script>
-const responses = [
-"Attends je mets mes lunettes...",
-"C'est encore une histoire d'internet ça.",
-"Demande à ton oncle Roger.",
-"Je comprends rien mais je t'aime.",
-"Ça me rappelle 1964 ça."
-];
+let confusionLevel = 0;
+function getResponse(userSpeech) {
+
+userSpeech = userSpeech.toLowerCase();
+confusionLevel++;
+
+if(userSpeech.includes("bonjour"))
+    return "Ah bonjour monsieur, c'est la sécurité sociale ?";
+
+if(userSpeech.includes("offre") || userSpeech.includes("promotion"))
+    return "Une promotion ? Comme chez Carrefour en 1998 ?";
+
+if(userSpeech.includes("argent") || userSpeech.includes("payer"))
+    return "Attendez je vais chercher mon carnet de chèques... il est où déjà...";
+
+if(userSpeech.includes("numéro") || userSpeech.includes("code"))
+    return "Mon code ? C'est 1... 9... 4... ah non ça c'est mon année de naissance.";
+
+if(userSpeech.includes("enregistrer"))
+    return "Ah vous enregistrez ? Moi aussi j'enregistre pour la police.";
+
+if(confusionLevel > 4)
+    return "Attendez je vous passe mon petit-fils... il est gendarme.";
+
+return [
+    "Hein ? Parlez plus fort j'ai l'appareil qui grésille.",
+    "Attendez je mets le haut-parleur.",
+    "C'est vous le monsieur d'internet ?",
+    "J'entends mal avec votre accent."
+][Math.floor(Math.random() * 4)];
+
+}
+
 
 function speak(text) {
     const speech = new SpeechSynthesisUtterance(text);
     speech.lang = "fr-FR";
+    speech.rate = 0.9;
+    speech.pitch = 0.8;
+    speech.volume = 1;
     speechSynthesis.speak(speech);
 }
+
 
 function startListening() {
     const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
@@ -41,11 +71,14 @@ function startListening() {
 
     recognition.onresult = function(event) {
         const userSpeech = event.results[0][0].transcript;
-        const randomResponse = responses[Math.floor(Math.random() * responses.length)];
-        document.getElementById("response").innerText =
-        "Toi : " + userSpeech + "\nMamie : " + randomResponse;
-        speak(randomResponse);
-    };
+        const randomResponse = getResponse(userSpeech);
+       setTimeout(() => {
+    document.getElementById("response").innerText =
+    "Toi : " + userSpeech + "\nMamie : " + randomResponse;
+
+    speak(randomResponse);
+}, 2000);
+
 
     recognition.onerror = function() {
         alert("Mamie n'a pas entendu !");
