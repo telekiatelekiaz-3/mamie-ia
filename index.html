@@ -18,82 +18,86 @@ button { padding: 15px 25px; font-size: 18px; border-radius: 10px; border: none;
 <button onclick="startListening()">🎤 Parler</button>
 
 <div id="response"></div>
-
 <script>
+
+// 🎤 Reconnaissance vocale
+const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+recognition.lang = "fr-FR";
+recognition.continuous = true;
+recognition.interimResults = false;
+
+// 🎭 Niveau de confusion progressif
 let confusionLevel = 0;
-function getResponse(userSpeech) {
 
-userSpeech = userSpeech.toLowerCase();
-confusionLevel++;
+// 🎬 Scénario anti-spam progressif
+const scenarios = [
 
-if(userSpeech.includes("bonjour"))
-    return "Ah bonjour monsieur, c'est la sécurité sociale ?";
+"Allô ? Oui… attendez je mets le haut-parleur…",
+"Vous êtes qui déjà ?",
+"Attendez je cherche mes lunettes…",
+"Roger ?! C’est pour toi je crois…",
+"Ah non il est aux toilettes…",
+"Vous pouvez répéter plus fort ? J’entends mal…",
+"Ah bon c’est important ?",
+"Oui j’ai mon RIB… attendez je le trouve…",
+"Alors c’est écrit… FR… euh… attendez…",
+"F… R… 7… non… 1… attendez je recommence…",
+"Ah non je me suis trompée c’est pas ça…",
+"Vous êtes toujours là ?",
+"Roger ils sont encore là !",
+"Oui excusez-moi j’ai fait tomber mes papiers…",
+"Ah ça sonne bizarre chez vous…",
+"Allô ? Vous m’entendez ?",
+"Je ne comprends rien à internet moi…",
+"Ah bon faut cliquer où ?",
+"Attendez je note…",
+"Vous pouvez répéter encore ?"
 
-if(userSpeech.includes("offre") || userSpeech.includes("promotion"))
-    return "Une promotion ? Comme chez Carrefour en 1998 ?";
+];
 
-if(userSpeech.includes("argent") || userSpeech.includes("payer"))
-    return "Attendez je vais chercher mon carnet de chèques... il est où déjà...";
+// 🎤 Fonction qui parle avec délai aléatoire
+function speakWithChaos() {
 
-if(userSpeech.includes("numéro") || userSpeech.includes("code"))
-    return "Mon code ? C'est 1... 9... 4... ah non ça c'est mon année de naissance.";
+    if (confusionLevel >= scenarios.length) {
+        confusionLevel = 0;
+    }
 
-if(userSpeech.includes("enregistrer"))
-    return "Ah vous enregistrez ? Moi aussi j'enregistre pour la police.";
+    const text = scenarios[confusionLevel];
+    confusionLevel++;
 
-if(confusionLevel > 4)
-    return "Attendez je vous passe mon petit-fils... il est gendarme.";
-
-return [
-    "Hein ? Parlez plus fort j'ai l'appareil qui grésille.",
-    "Attendez je mets le haut-parleur.",
-    "C'est vous le monsieur d'internet ?",
-    "J'entends mal avec votre accent."
-][Math.floor(Math.random() * 4)];
-
-}
-
-
-function speakRandomAudio() {
-
-    const audios = [
-        "mamie1.mp3",
-        "mamie2.mp3",
-        "mamie3.mp3",
-        "mamie4.mp3"
-    ];
-
-    const randomAudio = audios[Math.floor(Math.random() * audios.length)];
-
-    const audio = new Audio(randomAudio);
-    audio.play();
-}
-
-
-
-function startListening() {
-    const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-    recognition.lang = "fr-FR";
-    recognition.start();
-
- recognition.onresult = function(event) {
-    const userSpeech = event.results[0][0].transcript;
-    const randomResponse = getResponse(userSpeech);
+    const delay = Math.random() * 5000 + 3000; // 3 à 8 secondes
 
     setTimeout(() => {
-        document.getElementById("response").innerText =
-        "Toi : " + userSpeech + "\nMamie : " + randomResponse;
 
-        speak(randomResponse);
-    }, 2000);
+        const speech = new SpeechSynthesisUtterance(text);
+
+        speech.lang = "fr-FR";
+        speech.rate = 0.85;  // plus lent
+        speech.pitch = 0.9;  // légèrement plus grave
+        speech.volume = 1;
+
+        speechSynthesis.speak(speech);
+
+    }, delay);
+}
+
+// 🎧 Quand le spammer parle
+recognition.onresult = function(event) {
+    speakWithChaos();
 };
 
+// 🔁 Relance auto si ça s’arrête
+recognition.onend = function() {
+    recognition.start();
+};
 
-
-    recognition.onerror = function() {
-        alert("Mamie n'a pas entendu !");
-    };
+// ▶️ Bouton pour démarrer
+function startListening() {
+    recognition.start();
 }
+
+</script>
+
 </script>
 
 </body>
