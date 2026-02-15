@@ -69,15 +69,18 @@ function startListening() {
     recognition.lang = "fr-FR";
     recognition.start();
 
-    recognition.onresult = function(event) {
-        const userSpeech = event.results[0][0].transcript;
-        const randomResponse = getResponse(userSpeech);
-       setTimeout(() => {
-    document.getElementById("response").innerText =
-    "Toi : " + userSpeech + "\nMamie : " + randomResponse;
+ recognition.onresult = function(event) {
+    const userSpeech = event.results[0][0].transcript;
+    const randomResponse = getResponse(userSpeech);
 
-    speak(randomResponse);
-}, 2000);
+    setTimeout(() => {
+        document.getElementById("response").innerText =
+        "Toi : " + userSpeech + "\nMamie : " + randomResponse;
+
+        speak(randomResponse);
+    }, 2000);
+};
+
 
 
     recognition.onerror = function() {
