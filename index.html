@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mamie IA</title>
+<style>
+body { font-family: Arial; text-align: center; background: #ffe4ec; padding: 40px; }
+button { padding: 15px 25px; font-size: 18px; border-radius: 10px; border: none; background: #ff69b4; color: white; }
+#response { margin-top: 30px; font-size: 20px; white-space: pre-line; }
+</style>
+</head>
+<body>
+
+<h1>👵 Mamie IA</h1>
+<p>Appuie et parle à Mamie</p>
+
+<button onclick="startListening()">🎤 Parler</button>
+
+<div id="response"></div>
+
+<script>
+const responses = [
+"Attends je mets mes lunettes...",
+"C'est encore une histoire d'internet ça.",
+"Demande à ton oncle Roger.",
+"Je comprends rien mais je t'aime.",
+"Ça me rappelle 1964 ça."
+];
+
+function speak(text) {
+    const speech = new SpeechSynthesisUtterance(text);
+    speech.lang = "fr-FR";
+    speechSynthesis.speak(speech);
+}
+
+function startListening() {
+    const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+    recognition.lang = "fr-FR";
+    recognition.start();
+
+    recognition.onresult = function(event) {
+        const userSpeech = event.results[0][0].transcript;
+        const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+        document.getElementById("response").innerText =
+        "Toi : " + userSpeech + "\nMamie : " + randomResponse;
+        speak(randomResponse);
+    };
+
+    recognition.onerror = function() {
+        alert("Mamie n'a pas entendu !");
+    };
+}
+</script>
+
+</body>
+</html>
