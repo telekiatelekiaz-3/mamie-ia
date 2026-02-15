@@ -55,11 +55,19 @@ return [
 
 
 function speak(text) {
+
     const speech = new SpeechSynthesisUtterance(text);
+
     speech.lang = "fr-FR";
-    speech.rate = 0.9;
-    speech.pitch = 0.8;
+
+    // vitesse variable (plus humain)
+    speech.rate = 0.85 + (Math.random() * 0.2);
+
+    // petite variation de ton
+    speech.pitch = 0.75 + (Math.random() * 0.2);
+
     speech.volume = 1;
+
     speechSynthesis.speak(speech);
 }
 
